@@ -26,8 +26,17 @@ function expirepath_admin_form() {
 function expirepath_admin_form_submit(&$form, &$form_state) {
   // Don't want possible nasty XSS things being sent to external proxy,
   // however unlikely it is to do anything too awful.
-  $url = filter_xss($form_state['values']['expirepath_path_to_expire']);
+  $path = filter_xss($form_state['values']['expirepath_path_to_expire']);
 
-  // Trigger hook_expire_cache to purge this specific URL.
-  module_invoke_all('expire_cache', array($url));
+  // Expire url.
+  $internal_paths = array();
+  if ($path === 'FRONT') {
+    $internal_paths += ExpireAPI::getFrontPageUrls();
+  }
+  else {
+    $internal_paths[] = $path;
+  }
+
+  // Expire internal paths.
+  ExpireAPI::executeExpiration($internal_paths);
 }
