@@ -1,0 +1,8 @@
+name = Purge expire path
+description = Allows selected roles to issue a PURGE request for specific URL paths
+core = 7.x
+version = 7.x-1.0
+files[] = expirepath.module
+dependencies[] = expire
+
+configure = admin/config/development/expirepath

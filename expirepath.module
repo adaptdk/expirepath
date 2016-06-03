@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * @file
+ *
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function expirepath_menu() {
+  $items = array();
+  $items['admin/config/development/expirepath'] = array(
+    'title' => 'Purge expire path',
+    'description' => 'Send PURGE requests for specific URL paths',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('expirepath_admin_form'),
+    'access arguments' => array('expire specific urls'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'expirepath.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function expirepath_permission() {
+  return array(
+    'expire specific urls' => array(
+      'title' => t('Expire specific URL paths'),
+      'description' => t('Use the admin form to send PURGE requests for specific URL paths.'),
+    ),
+  );
+}
