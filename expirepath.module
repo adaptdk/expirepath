@@ -11,7 +11,7 @@
 function expirepath_menu() {
   $items = array();
   $items['admin/config/development/expirepath'] = array(
-    'title' => 'Purge expire path',
+    'title' => 'Expire path',
     'description' => 'Send PURGE requests for specific URL paths',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('expirepath_admin_form'),

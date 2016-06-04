@@ -7,9 +7,7 @@ function expirepath_admin_form() {
   $form['expirepath_path_to_expire'] = array(
     '#type' => 'textfield',
     '#title' => t('Path to expire'),
-    // Todo: Update description.
-    '#description' => t('Something meaningful about what to do'),
-    '#required' => TRUE,
+    '#description' => t('Write an internal path. For purging front page type: "FRONT".'),
     '#size' => 120,
   );
   $form['expirepath_submit'] = array(
@@ -24,17 +22,19 @@ function expirepath_admin_form() {
  * Submit handler for expirepath_admin_form.
  */
 function expirepath_admin_form_submit(&$form, &$form_state) {
-  // Don't want possible nasty XSS things being sent to external proxy,
-  // however unlikely it is to do anything too awful.
-  $path = filter_xss($form_state['values']['expirepath_path_to_expire']);
+  $path = filter_xss(trim($form_state['values']['expirepath_path_to_expire']));
+  $url = parse_url($path);
+  $path = implode("/", array_filter(explode("/", $url['path'])));
 
   // Expire url.
   $internal_paths = array();
   if ($path === 'FRONT') {
     $internal_paths += ExpireAPI::getFrontPageUrls();
+    drupal_set_message(t('The front page has been purged.'));
   }
   else {
     $internal_paths[] = $path;
+    drupal_set_message(t('Internal path: "%path" has been purged.', array('%path' => $path)));
   }
 
   // Expire internal paths.
